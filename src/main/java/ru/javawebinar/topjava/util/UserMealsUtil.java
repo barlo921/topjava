@@ -28,7 +28,7 @@ public class UserMealsUtil {
     public static List<UserMealWithExceed> getFilteredWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         //Sum calories for every day
         Map<LocalDate, Integer> daysCalories = new HashMap<>();
-        mealList.forEach(userMeal -> daysCalories.merge(userMeal.getDate(), userMeal.getCalories(), (oldVal, newVal) -> oldVal + newVal));
+        mealList.forEach(userMeal -> daysCalories.merge(userMeal.getDate(), userMeal.getCalories(), Integer::sum));
 
         //If UserMeal time is between specified time then add new UserMealWithExceed with UserMeal parameters
         List<UserMealWithExceed> mealListWithExceeds = new ArrayList<>();
@@ -53,11 +53,43 @@ public class UserMealsUtil {
             Get sum of day calories from Map. Set exceed value.
             Collect to List
          */
-        return mealList.stream().filter(userMeal -> TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime))
+        return mealList.stream()
+                .filter(userMeal -> TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime))
                 .map(userMeal -> new UserMealWithExceed(userMeal.getDateTime(),
                         userMeal.getDescription(),
                         userMeal.getCalories(),
                         daysCalories.get(userMeal.getDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
+    }
+
+    public static List<UserMealWithExceed> getFilteredWithExceededOptional2(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+
+        Map<LocalDate, UserMealWithExceed> filteredMealMap = new HashMap<>();//Filtered map with objects of preset time
+        Map<LocalDate, Integer> daysCalories = new HashMap<>();//Sum of calories for every day
+
+
+        /*
+            First store calories for the day. If it's not first eating then just sum calories
+            Then if current UserMeal is satisfies preset time, create new UserMealWithExceed and put it in Map where LocalDate is a key.
+            Exceed is false by default.
+            If current UserMeal day calories more than caloriesPerDay, set exceed true for that day.
+            Null check for non-sorted list. For cases when there is no objects for this date and preset time yet.
+         */
+        mealList.forEach(userMeal -> {
+            daysCalories.merge(userMeal.getDate(), userMeal.getCalories(), Integer::sum);
+
+            if (TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
+                filteredMealMap.put(userMeal.getDate(),
+                        new UserMealWithExceed(
+                                userMeal.getDateTime(),
+                                userMeal.getDescription(),
+                                userMeal.getCalories(),
+                                false));
+            }
+            if (filteredMealMap.get(userMeal.getDate()) != null) {
+                filteredMealMap.get(userMeal.getDate()).setExceed(daysCalories.get(userMeal.getDate()) > caloriesPerDay);
+            }
+        });
+        return new ArrayList<>(filteredMealMap.values());
     }
 }
