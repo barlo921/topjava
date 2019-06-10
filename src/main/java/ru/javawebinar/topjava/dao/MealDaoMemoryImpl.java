@@ -37,8 +37,8 @@ public class MealDaoMemoryImpl implements MealDao {
 
     @Override
     public void update(Meal meal) {
-        Meal oldMeal = meals.get(meal.getId());
-
+        Meal oldMeal = getById(meal.getId());
+        
         oldMeal.setDateTime(meal.getDateTime());
         oldMeal.setDescription(meal.getDescription());
         oldMeal.setCalories(meal.getCalories());
@@ -51,6 +51,14 @@ public class MealDaoMemoryImpl implements MealDao {
 
     @Override
     public Meal getById(int id) {
-        return meals.get(id);
+        int i = 0;
+        for (Meal meal :
+                meals) {
+            if (meal.getId() == id) {
+                return meals.get(i);
+            }
+            i++;
+        }
+        return null;
     }
 }
