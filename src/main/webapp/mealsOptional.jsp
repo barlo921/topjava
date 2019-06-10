@@ -16,6 +16,7 @@
         <td><b>Description</b></td>
         <td><b>Calories</b></td>
         <td><b>Excess</b></td>
+        <th colspan=2>Action</th>
     </tr>
     </thead>
     <tbody>
@@ -33,6 +34,8 @@
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
             <td>${meal.excess}</td>
+            <td><a href="mealsOptional?action=edit&mealId=<c:out value="${meal.id}"/>">Update</a></td>
+            <td><a href="mealsOptional?action=delete&mealId=<c:out value="${meal.id}"/>">Delete</a></td>
         </tr>
     </c:forEach>
     </tbody>

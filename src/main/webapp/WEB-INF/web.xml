@@ -25,5 +25,14 @@
         <url-pattern>/meals</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>mealsController</servlet-name>
+        <servlet-class>ru.javawebinar.topjava.web.MealsController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>mealsController</servlet-name>
+        <url-pattern>/mealsOptional</url-pattern>
+    </servlet-mapping>
+
 
 </web-app>
