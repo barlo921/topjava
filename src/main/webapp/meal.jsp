@@ -6,17 +6,20 @@
     <title>Title</title>
 </head>
 <body>
-<form method="POST" action='mealsOptional' name="updateMeal">
-    Meal ID : <input type="text" readonly="readonly" name="id"
-                     value="<c:out value="${meal.id}" />"/> <br/>
+<form method="POST" action='meals' name="updateMeal">
+    <input type="hidden" readonly="readonly" name="id"
+           value="${meal.id}"/>
     Date Time : <input
         type="text" name="dateTime"
-        value="<javatime:format value="${meal.dateTime}" style="MS" />"/> <br/>
+        placeholder="01-01-2000 10:00"
+        value="<javatime:format value="${meal.dateTime}" pattern="dd-MM-yyyy HH:mm" />"/> <br/>
     Description : <input
         type="text" name="description"
+        placeholder="Breakfast"
         value="<c:out value="${meal.description}" />"/> <br/>
     Calories : <input
         type="text" name="calories"
+        placeholder="1000"
         value="<c:out value="${meal.calories}" />"/> <br/>
     <br/>
     <input type="submit" value="Submit"/>

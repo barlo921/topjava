@@ -1,7 +1,5 @@
 package ru.javawebinar.topjava.model;
 
-import ru.javawebinar.topjava.util.MealMemoryService;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -22,14 +20,6 @@ public class Meal {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
-        id = MealMemoryService.getNewId();
-    }
-
-    public Meal(LocalDateTime dateTime, String description, int calories, int id) {
-        this.dateTime = dateTime;
-        this.description = description;
-        this.calories = calories;
-        this.id = id;
     }
 
     public LocalDateTime getDateTime() {
