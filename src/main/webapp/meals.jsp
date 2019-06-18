@@ -14,6 +14,12 @@
         .excess {
             color: red;
         }
+
+        dd {
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: top;
+        }
     </style>
 </head>
 <body>
@@ -21,6 +27,34 @@
     <h3><a href="index.html">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
+    <form method="post" action="meals?action=filter">
+        <table>
+            <tr>
+                <td>From date</td>
+                <td>To date</td>
+                <td>From time</td>
+                <td>To time</td>
+            </tr>
+            <tr>
+                <td>
+                    <dd><input type="date" value="${startDate}" name="startDate"></dd>
+                </td>
+                <td>
+                    <dd><input type="date" value="${endDate}" name="endDate"></dd>
+                </td>
+                <td>
+                    <dd><input type="time" value="${startTime}" name="startTime"></dd>
+                </td>
+                <td>
+                    <dd><input type="time" value="${endTime}" name="endTime"></dd>
+                </td>
+            </tr>
+        </table>
+        <button type="submit">Filter</button>
+    </form>
+    <form method="get" action="meals">
+        <button type="submit">Cancel</button>
+    </form>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">

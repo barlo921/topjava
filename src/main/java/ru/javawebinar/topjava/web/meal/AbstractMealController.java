@@ -4,9 +4,11 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.to.MealTo;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -18,50 +20,33 @@ abstract class AbstractMealController {
     private static final Logger log = getLogger(AbstractMealController.class);
 
     @Autowired
-    private MealService service;
+    private MealService mealService;
 
-    public Meal create(Meal meal, int userId){
+    public Meal create(Meal meal, int userId) {
         log.info("create {}", meal);
         checkNew(meal);
-        return service.create(meal, userId);
+        return mealService.create(meal, userId);
     }
 
     public void update(Meal meal, int id) {
         log.info("update {} with id={}", meal, id);
         assureIdConsistent(meal, id);
-        service.update(meal, id);
+        mealService.update(meal, id);
     }
 
-    public void delete(int id){
+    public void delete(int id, int userId) {
         log.info("delete meal with id={}", id);
-        service.delete(id);
+        mealService.delete(id, userId);
     }
 
-    public Meal get(int id){
+    public Meal get(int id, int userId) {
         log.info("get {}", id);
-        return service.get(id);
+        return mealService.get(id, userId);
     }
 
-    public List<Meal> getAll() {
-        log.info("getAll");
-        return service.getAll().stream()
-                .sorted(this::compare)
-                .collect(Collectors.toList());
-    }
-
-    public List<Meal> getAll(int userId) {
+    public List<MealTo> getAll(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
         log.info("getAll {}", userId);
-        return service.getAll(userId).stream()
-                .sorted(this::compare)
-                .collect(Collectors.toList());
-    }
-
-    private int compare(Meal m1, Meal m2) {
-        if (m1.getDateTime().compareTo(m2.getDateTime()) > 0) {
-            return -1;
-        } else if (m1.getDateTime().compareTo(m2.getDateTime()) < 0) {
-            return 1;
-        } else return 0;
+        return mealService.getAll(userId, startDate, endDate, startTime, endTime);
     }
 
 }
