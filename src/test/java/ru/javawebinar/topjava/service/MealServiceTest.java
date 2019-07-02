@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.service;
 
 import org.junit.*;
 import org.junit.rules.ExpectedException;
+import org.junit.rules.Stopwatch;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
@@ -17,6 +18,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.concurrent.TimeUnit;
 
 import static org.slf4j.LoggerFactory.getLogger;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -32,10 +34,7 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 public class MealServiceTest {
 
     private static final Logger log = getLogger(MealServiceTest.class);
-
-    private long start;
-    private long end;
-    private static StringBuilder message = new StringBuilder();
+    private static StringBuilder message = new StringBuilder(String.format("\n\u001B[34m%-20s %s", "Test", "Time"));
 
     @Autowired
     private MealService service;
@@ -44,24 +43,33 @@ public class MealServiceTest {
     public ExpectedException exception = ExpectedException.none();
 
     @Rule
-    public TestWatcher testWatcher = new TestWatcher() {
+    public Stopwatch stopwatch = new Stopwatch() {
+
         @Override
-        protected void finished(Description description) {
-            String s = String.format("\nTest time for %s is %dms", description.getMethodName(), (end - start));
+        protected void failed(long nanos, Throwable e, Description description) {
+            message.append("\u001B[31m");
+        }
+
+        @Override
+        protected void succeeded(long nanos, Description description) {
+            message.append("\u001B[32m");
+        }
+
+        @Override
+        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
+            String s = String.format("\n\u001B[33m%-20s Skipped", description.getMethodName());
             log.info(s);
             message.append(s);
         }
+
+        @Override
+        protected void finished(long nanos, Description description) {
+            String s = String.format("\n%-20s %dms", description.getMethodName(), TimeUnit.MILLISECONDS.convert(nanos, TimeUnit.NANOSECONDS));
+            log.info(s);
+            message.append(s);
+            message.append("\u001B[0m");
+        }
     };
-
-    @Before
-    public void setStart() {
-        start = System.currentTimeMillis();
-    }
-
-    @After
-    public void setEnd() {
-        end = System.currentTimeMillis();
-    }
 
     @AfterClass
     public static void setLog() {
