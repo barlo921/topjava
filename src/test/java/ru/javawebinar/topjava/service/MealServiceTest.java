@@ -44,30 +44,11 @@ public class MealServiceTest {
 
     @Rule
     public Stopwatch stopwatch = new Stopwatch() {
-
-        @Override
-        protected void failed(long nanos, Throwable e, Description description) {
-            message.append("\u001B[31m");
-        }
-
-        @Override
-        protected void succeeded(long nanos, Description description) {
-            message.append("\u001B[32m");
-        }
-
-        @Override
-        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
-            String s = String.format("\n\u001B[33m%-20s Skipped", description.getMethodName());
-            log.info(s);
-            message.append(s);
-        }
-
         @Override
         protected void finished(long nanos, Description description) {
-            String s = String.format("\n%-20s %dms", description.getMethodName(), TimeUnit.MILLISECONDS.convert(nanos, TimeUnit.NANOSECONDS));
+            String s = String.format("\n\u001B[32m%-20s %dms\u001B[0m", description.getMethodName(), TimeUnit.MILLISECONDS.convert(nanos, TimeUnit.NANOSECONDS));
             log.info(s);
             message.append(s);
-            message.append("\u001B[0m");
         }
     };
 
