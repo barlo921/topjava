@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional(readOnly = true)
 public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
 
     @Transactional
@@ -26,7 +27,7 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
 
     @Query(value = "SELECT m FROM Meal m " +
             "WHERE m.user.id=:user_id AND m.dateTime BETWEEN :start_date AND :end_date ORDER BY m.dateTime DESC")
-    List<Meal> findAllSorted(@Param("start_date") LocalDateTime startDate,
-                       @Param("end_date") LocalDateTime endDate,
-                       @Param("user_id") int userId);
+    List<Meal> filtered(@Param("start_date") LocalDateTime startDate,
+                        @Param("end_date") LocalDateTime endDate,
+                        @Param("user_id") int userId);
 }
