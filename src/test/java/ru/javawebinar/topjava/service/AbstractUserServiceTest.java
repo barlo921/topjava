@@ -4,7 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.context.ApplicationContext;
 import org.springframework.dao.DataAccessException;
+import ru.javawebinar.topjava.Profiles;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.JpaUtil;
@@ -26,12 +28,20 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     private CacheManager cacheManager;
 
     @Autowired
+    protected ApplicationContext ac;
+
     protected JpaUtil jpaUtil;
 
     @Before
-    public void setUp() throws Exception {
+    public void setJpaUtil() throws Exception {
+        for (String profile :
+                environment.getActiveProfiles()) {
+            if (profile.equals(Profiles.DATAJPA) || profile.equals(Profiles.JPA)) {
+                jpaUtil = ac.getBean(JpaUtil.class);
+                jpaUtil.clear2ndLevelHibernateCache();
+            }
+        }
         cacheManager.getCache("users").clear();
-        jpaUtil.clear2ndLevelHibernateCache();
     }
 
     @Test
