@@ -39,7 +39,17 @@ public class MealsUtil {
                 .collect(toList());
     }
 
+    public static List<Meal> getWithoutExcess(List<MealTo> mealToList) {
+        return mealToList.stream()
+                .map(MealsUtil::createWithoutExcess)
+                .collect(toList());
+    }
+
     private static MealTo createWithExcess(Meal meal, boolean excess) {
         return new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
+    }
+
+    private static Meal createWithoutExcess(MealTo mealTo) {
+        return new Meal(mealTo.getId(), mealTo.getDateTime(), mealTo.getDescription(), mealTo.getCalories());
     }
 }
